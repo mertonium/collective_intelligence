@@ -197,4 +197,25 @@ class Recommendations
     
     return results
   end
+  
+  def self.calculateSimilarItems(prefs,n=10)
+    # Create a dictionary of items showing which other items they
+    # are most similar to.
+    result={}
+
+    # Invert the preference matrix to be item-centric
+    itemPrefs = self.transformPrefs(prefs)
+    c = 0
+
+    itemPrefs.keys.each do |item|
+      # Status updates for large datasets
+      c += 1
+      puts "#{c} / #{itemPrefs.length}" if c % 100 == 0
+
+      # Find the most similar items to this one
+      scores = topMatches(itemPrefs,item,n=n,similarity=:sim_distance)
+      result[item]=scores
+    end
+    return result
+  end
 end
